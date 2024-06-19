@@ -16,14 +16,14 @@ class OnlineOrder : public Order {
 public:
     bool process() override {
         int processTime = rand() % 10 + 5;
-        std::cout << "Processing order for " << processTime << " seconds..." << std::endl;
+        std::cout << "Processing for " << processTime << " seconds..." << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(processTime));
-        std::cout << "Order processing complete" << std::endl;
+        std::cout << "Complete" << std::endl;
         return true;
     }
 };
 
-// Очередь
+// Блокирующая очередь
 class BlockingQueue {
 private:
     std::queue<Order*> queue;
@@ -57,23 +57,23 @@ public:
         for (int i = 0; i < numberOfOrders; ++i) {
             Order* order = new OnlineOrder();
             queue.put(order);
-            std::cout << "Created order " << i + 1 << std::endl;
+            std::cout << "Created order #" << i + 1 << std::endl;
         }
     }
 };
 
 // Потребитель
-class OrderProcessor {
+class OrderConsumer {
 private:
     BlockingQueue& queue;
     std::string name;
 public:
-    OrderProcessor(BlockingQueue& q, const std::string& n) : queue(q), name(n) {}
+    OrderConsumer(BlockingQueue& q, const std::string& n) : queue(q), name(n) {}
 
     void operator()() {
         while (true) {
             Order* order = queue.take();
-            std::cout << name << " is processing an order." << std::endl;
+            std::cout << name << " is processing..." << std::endl;
             order->process();
             delete order;
         }
@@ -84,18 +84,18 @@ int main() {
     srand(time(0));
     BlockingQueue queue;
 
-    OrderProducer producer(queue, 10);
+    OrderProducer producer(queue, rand() % 10 + 5);
     std::thread producerThread(producer);
 
-    OrderProcessor processor1(queue, "Processor 1");
-    OrderProcessor processor2(queue, "Processor 2");
-    std::thread processorThread1(processor1);
-    std::thread processorThread2(processor2);
+    OrderConsumer consumer1(queue, "Consumer 1");
+    OrderConsumer consumer2(queue, "Consumer 2");
+    std::thread consumerThread1(consumer1);
+    std::thread consumerThread2(consumer2);
 
     producerThread.join();
 
-    processorThread1.detach();
-    processorThread2.detach();
+    consumerThread1.detach();
+    consumerThread2.detach();
 
     std::this_thread::sleep_for(std::chrono::seconds(60));
 
