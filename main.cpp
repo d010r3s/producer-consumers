@@ -112,8 +112,8 @@ int main() {
     
     producerThread.join();
     
-    consumerThread1.join();
-    consumerThread2.join();
+    consumerThread1.detach();
+    consumerThread2.detach();
 
     std::this_thread::sleep_for(std::chrono::seconds(60)); 
 
