@@ -8,7 +8,7 @@ The producer creates orders and places them into a blocking queue making access 
 - [x] Consumers: several threads that retrieve and process orders from the queue
 - [x] class Order as an interface
 - [x] class OnlineOrder as a processing simulation
-- [x] BlockingQueue (using example from presentation)
+- [x] BlockingQueue (using example from lecture presentation)
       ![image](https://github.com/d010r3s/producer-consumers/assets/104917935/08698415-1702-43b1-b777-a9e33a0d2a3f)
 ## Example
 ![image](https://github.com/d010r3s/producer-consumers/assets/104917935/bf41d818-b3b4-4721-9528-88314f6b0805)
